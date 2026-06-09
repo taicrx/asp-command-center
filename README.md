@@ -113,3 +113,8 @@ Do not include:
 - Bed number
 - Birthday
 - Raw culture reports linked to individual patients
+
+
+## v4.1 fix
+
+Fact_Antibiogram now prioritizes `StandardOrganism` over `Organism` for heatmap and lookup display.

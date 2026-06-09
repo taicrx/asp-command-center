@@ -55,19 +55,19 @@ const ASP_DATA = {
   },
 
   cleanAntibiogram(rows) {
-cleanAntibiogram(rows) {
-  return rows.map(r => ({
-    Year: r.Year || "",
-    Period: r.Period || "",
-    Organism: this.normalizeOrganism(
-      r.StandardOrganism || r.Organism || ""
-    ),
-    Drug: this.normalizeDrug(r.Drug || ""),
-    IsolateCount: ASP_UTILS.toNum(r.IsolateCount),
-    SusceptibilityPercent: ASP_UTILS.toNum(r.SusceptibilityPercent),
-    Location: r.Location || ""
-  })).filter(r => r.Organism && r.Drug && r.SusceptibilityPercent !== null);
-},
+    return rows.map(r => ({
+      Year: r.Year || "",
+      Period: r.Period || "",
+      SourceCategory: r.SourceCategory || "",
+      Organism: this.normalizeOrganism(r.StandardOrganism || r.Organism || ""),
+      StandardOrganism: this.normalizeOrganism(r.StandardOrganism || r.Organism || ""),
+      ResistancePhenotype: r.ResistancePhenotype || "",
+      Drug: this.normalizeDrug(r.Drug || ""),
+      IsolateCount: ASP_UTILS.toNum(r.IsolateCount),
+      SusceptibilityPercent: ASP_UTILS.toNum(r.SusceptibilityPercent),
+      Location: r.Location || ""
+    })).filter(r => r.Organism && r.Drug && r.SusceptibilityPercent !== null);
+  },
 
   normalizeDrug(x) {
     return String(x).trim().toUpperCase();
