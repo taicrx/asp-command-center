@@ -118,3 +118,8 @@ Do not include:
 ## v4.1 fix
 
 Fact_Antibiogram now prioritizes `StandardOrganism` over `Organism` for heatmap and lookup display.
+
+
+## v4.2 debug
+
+This version has the user's CSV URLs prefilled and displays exact load errors in the UI.

@@ -9,12 +9,26 @@ const ASP_DATA = {
 
     ASP_UTILS.setStatus("Loading Fact_ASP_Monthly...");
     const aspCsv = await ASP_UTILS.fetchText(aspUrl);
-    ASP_STATE.aspMonthly = this.cleanAspMonthly(ASP_UTILS.parseCSV(aspCsv));
+    const aspRows = ASP_UTILS.parseCSV(aspCsv);
+    if (!aspRows.length) {
+      throw new Error("Fact_ASP_Monthly CSV loaded but contains no data rows.");
+    }
+    ASP_STATE.aspMonthly = this.cleanAspMonthly(aspRows);
+    if (!ASP_STATE.aspMonthly.length) {
+      throw new Error("Fact_ASP_Monthly parsed but no valid YYYYMM rows were found.");
+    }
 
     if (agUrl && !agUrl.includes("REPLACE_WITH")) {
       ASP_UTILS.setStatus("Loading Fact_Antibiogram...");
       const agCsv = await ASP_UTILS.fetchText(agUrl);
-      ASP_STATE.antibiogram = this.cleanAntibiogram(ASP_UTILS.parseCSV(agCsv));
+      const agRows = ASP_UTILS.parseCSV(agCsv);
+      if (!agRows.length) {
+        throw new Error("Fact_Antibiogram CSV loaded but contains no data rows.");
+      }
+      ASP_STATE.antibiogram = this.cleanAntibiogram(agRows);
+      if (!ASP_STATE.antibiogram.length) {
+        throw new Error("Fact_Antibiogram parsed but no valid rows found. Check Year, Period, StandardOrganism/Organism, Drug, SusceptibilityPercent.");
+      }
     } else {
       ASP_STATE.antibiogram = [];
     }

@@ -21,7 +21,14 @@ const ASP_APP = {
       ASP_UTILS.setStatus("Data loaded.");
     } catch (err) {
       console.error(err);
-      ASP_UTILS.setStatus("Load failed. Check config.js CSV URLs, publish settings, and column headers.");
+      const message = err && err.message ? err.message : String(err);
+      ASP_UTILS.setStatus("Load failed: " + message);
+      const executiveBrief = document.getElementById("executiveBrief");
+      if (executiveBrief) {
+        executiveBrief.innerText =
+          "Load failed.\n\nError detail:\n" + message +
+          "\n\nCheck:\n1. config.js CSV URLs\n2. Google Sheet publish-to-web setting\n3. Required column headers\n4. Browser Console for line number";
+      }
     }
   },
 

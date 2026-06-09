@@ -1,14 +1,7 @@
 /*
-AI ASP Command Center v4 config
+AI ASP Command Center v4.2 config
 
-Paste your published Google Sheet CSV URLs below.
-
-How to get CSV URL:
-Google Sheet → File → Share → Publish to web
-Choose tab: Fact_ASP_Monthly → CSV → Publish
-Choose tab: Fact_Antibiogram → CSV → Publish
-
-Use published CSV URLs, not normal /edit Google Sheet URLs.
+Published Google Sheet CSV URLs are prefilled.
 */
 
 const ASP_CONFIG = {
