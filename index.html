@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI ASP Command Center v4</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <main class="container">
+    <header class="hero">
+      <div>
+        <h1>AI ASP Command Center <span class="version">v4</span></h1>
+        <p>Resistance intelligence、local antibiogram、empirical coverage 與 ASP stewardship brief。</p>
+      </div>
+      <div class="status" id="dataStatus">Ready</div>
+    </header>
+
+    <nav class="tabs">
+      <button class="tab active" data-target="executive">Executive</button>
+      <button class="tab" data-target="resistance">Resistance Intelligence</button>
+      <button class="tab" data-target="antibiogram">Local Antibiogram</button>
+      <button class="tab" data-target="empirical">Empirical Therapy</button>
+      <button class="tab" data-target="ai">AI ASP Analyst</button>
+    </nav>
+
+    <section class="toolbar">
+      <div>
+        <strong>Data source</strong>
+        <div class="small">
+          CSV URLs are configured in <code>config.js</code>. Update Google Sheet; this dashboard will reload published CSV data.
+        </div>
+      </div>
+      <button onclick="ASP_APP.loadAll()">Reload data</button>
+    </section>
+
+    <section id="executive" class="page active-page">
+      <section class="kpi-grid">
+        <article class="kpi-card"><div class="kpi-title">Latest CRKP Rate</div><div class="kpi-value" id="kpiCRKP">-</div></article>
+        <article class="kpi-card"><div class="kpi-title">Latest CRAB Rate</div><div class="kpi-value" id="kpiCRAB">-</div></article>
+        <article class="kpi-card"><div class="kpi-title">Latest CRPA Rate</div><div class="kpi-value" id="kpiCRPA">-</div></article>
+        <article class="kpi-card"><div class="kpi-title">Latest MRSA Rate</div><div class="kpi-value" id="kpiMRSA">-</div></article>
+        <article class="kpi-card"><div class="kpi-title">Latest VRE Rate</div><div class="kpi-value" id="kpiVRE">-</div></article>
+        <article class="kpi-card"><div class="kpi-title">Total Carbapenem DDD</div><div class="kpi-value" id="kpiCarbapenem">-</div></article>
+        <article class="kpi-card"><div class="kpi-title">Vancomycin DDD</div><div class="kpi-value" id="kpiVancomycin">-</div></article>
+        <article class="kpi-card"><div class="kpi-title">Teicoplanin DDD</div><div class="kpi-value" id="kpiTeicoplanin">-</div></article>
+      </section>
+
+      <section class="grid-2">
+        <article class="panel">
+          <h2>MDRO Overview</h2>
+          <canvas id="overviewMdroChart"></canvas>
+        </article>
+        <article class="panel">
+          <h2>ASP Executive Brief</h2>
+          <div id="executiveBrief" class="brief">尚未載入資料。</div>
+        </article>
+      </section>
+    </section>
+
+    <section id="resistance" class="page">
+      <section class="grid-2">
+        <article class="panel">
+          <h2>Carbapenem Pressure vs GNB MDRO</h2>
+          <p class="small">Total carbapenem DDD 與 CRKP / CRAB / CRPA / CREC 趨勢並列。</p>
+          <canvas id="carbapenemPressureChart"></canvas>
+        </article>
+
+        <article class="panel">
+          <h2>Anti-MRSA Pressure</h2>
+          <p class="small">Vancomycin / Teicoplanin DDD 與 MRSA / VRE 趨勢並列。</p>
+          <canvas id="antiMrsaPressureChart"></canvas>
+        </article>
+      </section>
+
+      <section class="panel">
+        <h2>Custom Correlation Explorer</h2>
+        <div class="selector-row">
+          <label>
+            X-axis
+            <select id="corrX" onchange="ASP_CHARTS.renderCorrelation()">
+              <option value="Total_Carbapenem_DDD_num">Total carbapenem DDD</option>
+              <option value="Meropenem_DDD_num">Meropenem DDD</option>
+              <option value="Imipenem_DDD_num">Imipenem DDD</option>
+              <option value="Ertapenem_DDD_num">Ertapenem DDD</option>
+              <option value="Doripenem_DDD_num">Doripenem DDD</option>
+              <option value="Vancomycin_DDD_num">Vancomycin DDD</option>
+              <option value="Teicoplanin_DDD_num">Teicoplanin DDD</option>
+            </select>
+          </label>
+          <label>
+            Y-axis
+            <select id="corrY" onchange="ASP_CHARTS.renderCorrelation()">
+              <option value="CRKP_Rate_num">CRKP rate</option>
+              <option value="CRAB_Rate_num">CRAB rate</option>
+              <option value="CRPA_Rate_num">CRPA rate</option>
+              <option value="CREC_Rate_num">CREC rate</option>
+              <option value="MRSA_Rate_num">MRSA rate</option>
+              <option value="VRE_Rate_num">VRE rate</option>
+            </select>
+          </label>
+        </div>
+        <canvas id="customCorrelationChart"></canvas>
+        <div id="corrSummary" class="small"></div>
+      </section>
+    </section>
+
+    <section id="antibiogram" class="page">
+      <section class="panel">
+        <h2>Local Antibiogram Heatmap</h2>
+        <div class="selector-row">
+          <label>
+            Year / Period
+            <select id="periodSelect" onchange="ASP_HEATMAP.renderAll()"></select>
+          </label>
+          <label>
+            Organism group
+            <select id="organismGroup" onchange="ASP_HEATMAP.renderAll()">
+              <option value="all">All organisms</option>
+              <option value="gnb">GNB focus</option>
+              <option value="gpc">GPC focus</option>
+              <option value="mdro">MDRO focus</option>
+            </select>
+          </label>
+        </div>
+        <div class="legend">
+          <span class="legend-item hm-high">≥90%</span>
+          <span class="legend-item hm-good">80–89%</span>
+          <span class="legend-item hm-mid">70–79%</span>
+          <span class="legend-item hm-low">50–69%</span>
+          <span class="legend-item hm-poor">&lt;50%</span>
+        </div>
+        <div id="antibiogramStatus" class="small">Fact_Antibiogram 尚未載入。</div>
+        <div id="heatmapContainer" class="heatmap-wrap"></div>
+      </section>
+
+      <section class="panel">
+        <h2>Organism Susceptibility Trend</h2>
+        <div class="selector-row">
+          <label>
+            Organism
+            <select id="trendOrganismSelect" onchange="ASP_HEATMAP.renderTrend()"></select>
+          </label>
+          <label>
+            Drug
+            <select id="trendDrugSelect" onchange="ASP_HEATMAP.renderTrend()"></select>
+          </label>
+        </div>
+        <canvas id="antibiogramTrendChart"></canvas>
+      </section>
+
+      <section class="panel">
+        <h2>Lookup Table</h2>
+        <div class="lookup-row">
+          <input id="organismSearch" placeholder="例如：Escherichia coli / Klebsiella pneumoniae" />
+          <button onclick="ASP_HEATMAP.filterTable()">Search</button>
+        </div>
+        <div class="table-wrap">
+          <table id="antibiogramTable">
+            <thead>
+              <tr><th>Year</th><th>Period</th><th>Organism</th><th>Drug</th><th>IsolateCount</th><th>S%</th><th>Location</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+
+    <section id="empirical" class="page">
+      <section class="panel">
+        <h2>Empirical Therapy Assistant</h2>
+        <div class="selector-row">
+          <label>
+            Syndrome
+            <select id="syndromeSelect" onchange="ASP_COVERAGE.render()">
+              <option value="uti">UTI</option>
+              <option value="pneumonia">Pneumonia / HAP</option>
+              <option value="bsi">Bloodstream infection</option>
+              <option value="iai">Intra-abdominal infection</option>
+            </select>
+          </label>
+          <label>
+            Minimum isolate count
+            <select id="minCountSelect" onchange="ASP_COVERAGE.render()">
+              <option value="0">No filter</option>
+              <option value="10">≥10</option>
+              <option value="30">≥30</option>
+              <option value="100">≥100</option>
+            </select>
+          </label>
+        </div>
+        <div class="small">
+          Coverage = isolate-count weighted average susceptibility across syndrome-relevant organisms. This supports ASP review and does not replace clinical judgment.
+        </div>
+        <div id="coverageRecommendation" class="recommendation"></div>
+        <div id="coverageContainer" class="coverage-grid"></div>
+      </section>
+
+      <section class="panel">
+        <h2>Coverage Matrix Detail</h2>
+        <div id="coverageDetailContainer" class="table-wrap"></div>
+      </section>
+    </section>
+
+    <section id="ai" class="page">
+      <section class="grid-2">
+        <article class="panel">
+          <h2>AI ASP Analyst</h2>
+          <div id="aiBrief" class="brief">尚未載入資料。</div>
+        </article>
+
+        <article class="panel">
+          <h2>Prompt for GPT Agent</h2>
+          <textarea id="aiPromptBox" class="prompt-box" readonly></textarea>
+          <button onclick="ASP_AI.copyPrompt()">Copy Prompt</button>
+        </article>
+      </section>
+    </section>
+
+    <footer>
+      本工具僅使用彙總資料。不應輸入姓名、病歷號、完整 SOAP、床號、生日或可識別病人資料。
+    </footer>
+  </main>
+
+  <script src="config.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/heatmap.js"></script>
+  <script src="js/coverage.js"></script>
+  <script src="js/ai.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
