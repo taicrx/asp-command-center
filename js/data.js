@@ -1,98 +1,10 @@
-const ASP_DATA = {
-  async loadAll() {
-    const aspUrl = ASP_CONFIG.FACT_ASP_MONTHLY_CSV_URL;
-    const agUrl = ASP_CONFIG.FACT_ANTIBIOGRAM_CSV_URL;
-
-    if (!aspUrl || aspUrl.includes("REPLACE_WITH")) {
-      throw new Error("Missing Fact_ASP_Monthly CSV URL in config.js");
-    }
-
-    ASP_UTILS.setStatus("Loading Fact_ASP_Monthly...");
-    const aspCsv = await ASP_UTILS.fetchText(aspUrl);
-    const aspRows = ASP_UTILS.parseCSV(aspCsv);
-    if (!aspRows.length) {
-      throw new Error("Fact_ASP_Monthly CSV loaded but contains no data rows.");
-    }
-    ASP_STATE.aspMonthly = this.cleanAspMonthly(aspRows);
-    if (!ASP_STATE.aspMonthly.length) {
-      throw new Error("Fact_ASP_Monthly parsed but no valid YYYYMM rows were found.");
-    }
-
-    if (agUrl && !agUrl.includes("REPLACE_WITH")) {
-      ASP_UTILS.setStatus("Loading Fact_Antibiogram...");
-      const agCsv = await ASP_UTILS.fetchText(agUrl);
-      const agRows = ASP_UTILS.parseCSV(agCsv);
-      if (!agRows.length) {
-        throw new Error("Fact_Antibiogram CSV loaded but contains no data rows.");
-      }
-      ASP_STATE.antibiogram = this.cleanAntibiogram(agRows);
-      if (!ASP_STATE.antibiogram.length) {
-        throw new Error("Fact_Antibiogram parsed but no valid rows found. Check Year, Period, StandardOrganism/Organism, Drug, SusceptibilityPercent.");
-      }
-    } else {
-      ASP_STATE.antibiogram = [];
-    }
-  },
-
-  cleanAspMonthly(rows) {
-    const toNum = ASP_UTILS.toNum;
-
-    return rows.map(r => {
-      const meropenem = toNum(r.Meropenem_DDD);
-      const imipenem = toNum(r.Imipenem_DDD);
-      const ertapenem = toNum(r.Ertapenem_DDD);
-      const doripenem = toNum(r.Doripenem_DDD);
-      const vancomycin = toNum(r.Vancomycin_DDD);
-      const teicoplanin = toNum(r.Teicoplanin_DDD);
-
-      return {
-        ...r,
-        YYYYMM: r.YYYYMM || r.Date || "",
-        CRKP_Rate_num: toNum(r.CRKP_Rate),
-        CRAB_Rate_num: toNum(r.CRAB_Rate),
-        CRPA_Rate_num: toNum(r.CRPA_Rate),
-        CREC_Rate_num: toNum(r.CREC_Rate),
-        MRSA_Rate_num: toNum(r.MRSA_Rate),
-        VRE_Rate_num: toNum(r.VRE_Rate),
-        Meropenem_DDD_num: meropenem,
-        Imipenem_DDD_num: imipenem,
-        Ertapenem_DDD_num: ertapenem,
-        Doripenem_DDD_num: doripenem,
-        Vancomycin_DDD_num: vancomycin,
-        Teicoplanin_DDD_num: teicoplanin,
-        Total_Carbapenem_DDD_num:
-          [meropenem, imipenem, ertapenem, doripenem]
-            .filter(x => x !== null)
-            .reduce((a, b) => a + b, 0)
-      };
-    }).filter(r => r.YYYYMM);
-  },
-
-  cleanAntibiogram(rows) {
-    return rows.map(r => ({
-      Year: r.Year || "",
-      Period: r.Period || "",
-      SourceCategory: r.SourceCategory || "",
-      Organism: this.normalizeOrganism(r.StandardOrganism || r.Organism || ""),
-      StandardOrganism: this.normalizeOrganism(r.StandardOrganism || r.Organism || ""),
-      ResistancePhenotype: r.ResistancePhenotype || "",
-      Drug: this.normalizeDrug(r.Drug || ""),
-      IsolateCount: ASP_UTILS.toNum(r.IsolateCount),
-      SusceptibilityPercent: ASP_UTILS.toNum(r.SusceptibilityPercent),
-      Location: r.Location || ""
-    })).filter(r => r.Organism && r.Drug && r.SusceptibilityPercent !== null);
-  },
-
-  normalizeDrug(x) {
-    return String(x).trim().toUpperCase();
-  },
-
-  normalizeOrganism(x) {
-    return String(x)
-      .replace(/Escheric\.?coli/i, "Escherichia coli")
-      .replace(/Klebsiel\.?pneumoniae/i, "Klebsiella pneumoniae")
-      .replace(/Pseudomo\.?aeruginosa/i, "Pseudomonas aeruginosa")
-      .replace(/Acinetob\.?baumannii/i, "Acinetobacter baumannii")
-      .trim();
-  }
+const ASP_DATA={
+ drugNameMap:{AN:"Amikacin",CAZ:"Ceftazidime",CC:"Clindamycin",CIP:"Ciprofloxacin",CRO:"Ceftriaxone",FEP:"Cefepime",FLO:"",GM:"Gentamicin",IPM:"Imipenem",LVX:"Levofloxacin",MEN:"Meropenem",MEM:"Meropenem",MET:"Metronidazole",MI:"Minocycline",P:"Penicillin",PIP:"Piperacillin",SAM:"Ampicillin/Sulbactam",SXT:"Trimethoprim/Sulfamethoxazole",TGC:"Tigecycline",TZP:"Piperacillin/Tazobactam",VA:"Vancomycin",VAN:"Vancomycin",TEC:"Teicoplanin",LZD:"Linezolid",DAP:"Daptomycin",OX:"Oxacillin",ETP:"Ertapenem",DOR:"Doripenem"},
+ drugDisplay(d,name){let code=this.normalizeDrug(d||"");let nm=name||this.drugNameMap[code]||code;return nm?`${nm} (${code})`:code},
+ async loadAll(){const a=ASP_CONFIG.FACT_ASP_MONTHLY_CSV_URL,g=ASP_CONFIG.FACT_ANTIBIOGRAM_CSV_URL;if(!a||a.includes("REPLACE_WITH"))throw new Error("Missing Fact_ASP_Monthly CSV URL in config.js");ASP_UTILS.setStatus("Loading Fact_ASP_Monthly...");ASP_STATE.aspMonthly=this.cleanAsp(ASP_UTILS.parseCSV(await ASP_UTILS.fetchText(a)));if(!ASP_STATE.aspMonthly.length)throw new Error("No valid rows in Fact_ASP_Monthly");
+ if(g&&!g.includes("REPLACE_WITH")){ASP_UTILS.setStatus("Loading Fact_Antibiogram_Master...");ASP_STATE.antibiogram=this.cleanAg(ASP_UTILS.parseCSV(await ASP_UTILS.fetchText(g)));if(!ASP_STATE.antibiogram.length)throw new Error("No valid rows in Fact_Antibiogram_Master")}else ASP_STATE.antibiogram=[]},
+ cleanAsp(rows){const n=ASP_UTILS.toNum;return rows.map(r=>{let me=n(r.Meropenem_DDD),im=n(r.Imipenem_DDD),et=n(r.Ertapenem_DDD),dor=n(r.Doripenem_DDD),va=n(r.Vancomycin_DDD),tec=n(r.Teicoplanin_DDD);return{...r,YYYYMM:r.YYYYMM||r.Date||"",CRKP_Rate_num:n(r.CRKP_Rate),CRAB_Rate_num:n(r.CRAB_Rate),CRPA_Rate_num:n(r.CRPA_Rate),CREC_Rate_num:n(r.CREC_Rate),MRSA_Rate_num:n(r.MRSA_Rate),VRE_Rate_num:n(r.VRE_Rate),Meropenem_DDD_num:me,Imipenem_DDD_num:im,Ertapenem_DDD_num:et,Doripenem_DDD_num:dor,Vancomycin_DDD_num:va,Teicoplanin_DDD_num:tec,Total_Carbapenem_DDD_num:[me,im,et,dor].filter(x=>x!==null).reduce((a,b)=>a+b,0)}}).filter(r=>r.YYYYMM)},
+ cleanAg(rows){return rows.map(r=>{let drug=this.normalizeDrug(r.Drug||"");let org=this.normalizeOrg(r.StandardOrganism||r.Organism||"");let s=ASP_UTILS.toNum(r.SusceptibilityPercent);return{Year:String(r.Year||""),Period:r.Period||"",SourceCategory:r.SourceCategory||"",Organism:org,StandardOrganism:org,ResistancePhenotype:r.ResistancePhenotype||"",Drug:drug,DrugName:r.DrugName||this.drugNameMap[drug]||"",DrugDisplay:this.drugDisplay(drug,r.DrugName||""),IsolateCount:ASP_UTILS.toNum(r.IsolateCount),SusceptibilityPercent:s,Location:r.Location||"Hospital"}}).filter(r=>r.Year&&r.Period&&r.Organism&&r.Drug&&r.SusceptibilityPercent!==null)},
+ normalizeDrug(x){return String(x).trim().toUpperCase()},
+ normalizeOrg(x){let s=String(x||"").replace(/^\d+\s*/,"").trim();return s.replace(/Escheric\.?coli/i,"Escherichia coli").replace(/Klebsiel\.?pneumoniae/i,"Klebsiella pneumoniae").replace(/Pseudomo\.?aeruginosa/i,"Pseudomonas aeruginosa").replace(/Acinetob\.?baumannii/i,"Acinetobacter baumannii")}
 };

@@ -1,13 +1,14 @@
 /*
-AI ASP Command Center v4.2 config
+AI ASP Command Center v5 config
 
-Published Google Sheet CSV URLs are prefilled.
+Paste published Google Sheet CSV URLs below.
+Use /pub?...&output=csv URLs, not normal /edit URLs.
 */
 
 const ASP_CONFIG = {
   FACT_ASP_MONTHLY_CSV_URL:
-    "https://docs.google.com/spreadsheets/d/e/2PACX-1vQM8WMnPop68JT32GelxEr2Nf77TcQKXAZvATTlsj59kKxzQFIfkRzXB7UwgpE5pXYElaWIDkDyYHsZ/pub?gid=257837179&single=true&output=csv",
+    "REPLACE_WITH_FACT_ASP_MONTHLY_CSV_URL",
 
   FACT_ANTIBIOGRAM_CSV_URL:
-    "https://docs.google.com/spreadsheets/d/e/2PACX-1vQM8WMnPop68JT32GelxEr2Nf77TcQKXAZvATTlsj59kKxzQFIfkRzXB7UwgpE5pXYElaWIDkDyYHsZ/pub?gid=548638764&single=true&output=csv"
+    "REPLACE_WITH_FACT_ANTIBIOGRAM_MASTER_CSV_URL"
 };

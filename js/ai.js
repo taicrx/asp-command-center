@@ -1,107 +1,41 @@
-const ASP_AI = {
-  renderAll() {
-    this.renderBriefs();
-    this.renderPrompt();
-  },
+const ASP_AI={
+ renderAll(){this.brief();this.prompt()},
+ brief(){let rows=ASP_STATE.aspMonthly;if(!rows.length)return;let r=rows.at(-1),chg=k=>ASP_UTILS.change(rows,k),d=x=>x===null?"":`(${x>=0?"+":""}${x.toFixed(1)}% vs previous)`;let notes=[];if(r.CRKP_Rate_num>=20)notes.push("CRKP rate ≥20%：review carbapenem empirical use and de-escalation.");if(r.CRAB_Rate_num>=30)notes.push("CRAB high：check ICU/RCU cluster and infection-control actions.");if(r.MRSA_Rate_num>=50)notes.push("MRSA high：review anti-MRSA agent pressure and culture source.");if((chg("Total_Carbapenem_DDD_num")||0)>15)notes.push("Total carbapenem DDD increased >15%：include in ASP morning review.");let text=`ASP Stewardship Brief
 
-  renderBriefs() {
-    const rows = ASP_STATE.aspMonthly;
-    if (!rows.length) return;
-
-    const latest = rows[rows.length - 1];
-    const crkpDelta = ASP_UTILS.changeFromPrevious(rows, "CRKP_Rate_num");
-    const crabDelta = ASP_UTILS.changeFromPrevious(rows, "CRAB_Rate_num");
-    const carbDelta = ASP_UTILS.changeFromPrevious(rows, "Total_Carbapenem_DDD_num");
-    const mrsaDelta = ASP_UTILS.changeFromPrevious(rows, "MRSA_Rate_num");
-
-    const riskNotes = [];
-
-    if (latest.CRKP_Rate_num !== null && latest.CRKP_Rate_num >= 20) {
-      riskNotes.push("CRKP rate ≥ 20%：建議檢視 carbapenem empirical use 與 de-escalation 流程。");
-    }
-    if (latest.CRAB_Rate_num !== null && latest.CRAB_Rate_num >= 30) {
-      riskNotes.push("CRAB rate 偏高：建議追蹤 ICU / respiratory care unit cluster 與感染管制策略。");
-    }
-    if (latest.MRSA_Rate_num !== null && latest.MRSA_Rate_num >= 50) {
-      riskNotes.push("MRSA rate 偏高：建議同步檢視 anti-MRSA agents 使用壓力與採檢來源。");
-    }
-    if (carbDelta !== null && carbDelta > 15) {
-      riskNotes.push("Total carbapenem DDD 較前期增加 >15%：建議列入 ASP morning review。");
-    }
-
-    const brief =
-`ASP Stewardship Brief
-
-Latest period: ${latest.YYYYMM}
+Latest period: ${r.YYYYMM}
 
 Key indicators:
-- CRKP: ${ASP_UTILS.fmtPct(latest.CRKP_Rate_num)} ${this.deltaText(crkpDelta)}
-- CRAB: ${ASP_UTILS.fmtPct(latest.CRAB_Rate_num)} ${this.deltaText(crabDelta)}
-- CRPA: ${ASP_UTILS.fmtPct(latest.CRPA_Rate_num)}
-- MRSA: ${ASP_UTILS.fmtPct(latest.MRSA_Rate_num)} ${this.deltaText(mrsaDelta)}
-- VRE: ${ASP_UTILS.fmtPct(latest.VRE_Rate_num)}
-- Total carbapenem DDD: ${ASP_UTILS.fmtNum(latest.Total_Carbapenem_DDD_num)} ${this.deltaText(carbDelta)}
-- Vancomycin DDD: ${ASP_UTILS.fmtNum(latest.Vancomycin_DDD_num)}
-- Teicoplanin DDD: ${ASP_UTILS.fmtNum(latest.Teicoplanin_DDD_num)}
+- CRKP: ${ASP_UTILS.fmtPct(r.CRKP_Rate_num)} ${d(chg("CRKP_Rate_num"))}
+- CRAB: ${ASP_UTILS.fmtPct(r.CRAB_Rate_num)} ${d(chg("CRAB_Rate_num"))}
+- CRPA: ${ASP_UTILS.fmtPct(r.CRPA_Rate_num)}
+- MRSA: ${ASP_UTILS.fmtPct(r.MRSA_Rate_num)} ${d(chg("MRSA_Rate_num"))}
+- VRE: ${ASP_UTILS.fmtPct(r.VRE_Rate_num)}
+- Total carbapenem DDD: ${ASP_UTILS.fmtNum(r.Total_Carbapenem_DDD_num)} ${d(chg("Total_Carbapenem_DDD_num"))}
+- Vancomycin DDD: ${ASP_UTILS.fmtNum(r.Vancomycin_DDD_num)}
+- Teicoplanin DDD: ${ASP_UTILS.fmtNum(r.Teicoplanin_DDD_num)}
 
 Suggested ASP focus:
-${riskNotes.length ? riskNotes.map(x => "- " + x).join("\n") : "- No major rule-based alert detected. Continue routine monitoring."}
+${notes.length?notes.map(x=>"- "+x).join("\n"):"- No major rule-based alert detected. Continue routine monitoring."}
 
-Interpretation note:
-This is a rule-based preliminary summary. It supports ASP pharmacist review and should not be used as an automatic treatment directive.`;
+Note: This is a rule-based preliminary summary for ASP pharmacist review.`;document.getElementById("aiBrief").innerText=text;document.getElementById("executiveBrief").innerText=text},
+ prompt(){let r=ASP_STATE.aspMonthly.at(-1);if(!r)return;document.getElementById("aiPromptBox").value=`請以 ASP 臨床藥師角度，根據本院彙總資料產生 ASP Morning Brief。
 
-    document.getElementById("aiBrief").innerText = brief;
-    document.getElementById("executiveBrief").innerText = brief;
-  },
+資料期間：${r.YYYYMM}
+CRKP rate: ${ASP_UTILS.fmtPct(r.CRKP_Rate_num)}
+CRAB rate: ${ASP_UTILS.fmtPct(r.CRAB_Rate_num)}
+CRPA rate: ${ASP_UTILS.fmtPct(r.CRPA_Rate_num)}
+CREC rate: ${ASP_UTILS.fmtPct(r.CREC_Rate_num)}
+MRSA rate: ${ASP_UTILS.fmtPct(r.MRSA_Rate_num)}
+VRE rate: ${ASP_UTILS.fmtPct(r.VRE_Rate_num)}
 
-  renderPrompt() {
-    const rows = ASP_STATE.aspMonthly;
-    if (!rows.length) return;
+Total carbapenem DDD: ${ASP_UTILS.fmtNum(r.Total_Carbapenem_DDD_num)}
+Meropenem DDD: ${ASP_UTILS.fmtNum(r.Meropenem_DDD_num)}
+Imipenem DDD: ${ASP_UTILS.fmtNum(r.Imipenem_DDD_num)}
+Ertapenem DDD: ${ASP_UTILS.fmtNum(r.Ertapenem_DDD_num)}
+Doripenem DDD: ${ASP_UTILS.fmtNum(r.Doripenem_DDD_num)}
+Vancomycin DDD: ${ASP_UTILS.fmtNum(r.Vancomycin_DDD_num)}
+Teicoplanin DDD: ${ASP_UTILS.fmtNum(r.Teicoplanin_DDD_num)}
 
-    const latest = rows[rows.length - 1];
-
-    const prompt =
-`請以抗生素管理計畫（ASP）臨床藥師角度，根據以下本院彙總資料，產生一份 ASP Morning Brief。
-
-資料期間：${latest.YYYYMM}
-
-最新指標：
-CRKP rate: ${ASP_UTILS.fmtPct(latest.CRKP_Rate_num)}
-CRAB rate: ${ASP_UTILS.fmtPct(latest.CRAB_Rate_num)}
-CRPA rate: ${ASP_UTILS.fmtPct(latest.CRPA_Rate_num)}
-CREC rate: ${ASP_UTILS.fmtPct(latest.CREC_Rate_num)}
-MRSA rate: ${ASP_UTILS.fmtPct(latest.MRSA_Rate_num)}
-VRE rate: ${ASP_UTILS.fmtPct(latest.VRE_Rate_num)}
-
-抗生素使用：
-Total carbapenem DDD: ${ASP_UTILS.fmtNum(latest.Total_Carbapenem_DDD_num)}
-Meropenem DDD: ${ASP_UTILS.fmtNum(latest.Meropenem_DDD_num)}
-Imipenem DDD: ${ASP_UTILS.fmtNum(latest.Imipenem_DDD_num)}
-Ertapenem DDD: ${ASP_UTILS.fmtNum(latest.Ertapenem_DDD_num)}
-Doripenem DDD: ${ASP_UTILS.fmtNum(latest.Doripenem_DDD_num)}
-Vancomycin DDD: ${ASP_UTILS.fmtNum(latest.Vancomycin_DDD_num)}
-Teicoplanin DDD: ${ASP_UTILS.fmtNum(latest.Teicoplanin_DDD_num)}
-
-請輸出：
-1. 本月重點摘要
-2. 可能的 ASP 風險訊號
-3. 需要追蹤的抗藥性趨勢
-4. 建議介入策略
-5. 需要避免過度推論的地方
-
-請注意：這是彙總資料，不能直接推論個別病人的治療。`;
-
-    document.getElementById("aiPromptBox").value = prompt;
-  },
-
-  deltaText(delta) {
-    if (delta === null) return "";
-    return `(${delta >= 0 ? "+" : ""}${delta.toFixed(1)}% vs previous)`;
-  },
-
-  copyPrompt() {
-    const box = document.getElementById("aiPromptBox");
-    box.select();
-    document.execCommand("copy");
-  }
+請輸出：1.重點摘要 2.風險訊號 3.需追蹤趨勢 4.建議介入 5.避免過度推論。`},
+ copyPrompt(){let b=document.getElementById("aiPromptBox");b.select();document.execCommand("copy")}
 };
