@@ -11,7 +11,7 @@
 <main class="container">
   <header class="hero">
     <div>
-      <h1> 臺中醫院分離菌種抗生素敏感性儀表板 <span class="version">v6</span></h1>
+      <h1>AI ASP Command Center <span class="version">v6</span></h1>
       <p>Resistance intelligence, AWaRe stewardship dashboard, antibiogram heatmap, multi-year trend, and empirical coverage.</p>
     </div>
     <div class="status" id="dataStatus">Ready</div>
@@ -19,6 +19,7 @@
 
   <nav class="tabs">
     <button class="tab active" data-target="executive">Executive</button>
+    <button class="tab" data-target="aware">WHO AWaRe</button>
     <button class="tab" data-target="resistance">Resistance Intelligence</button>
     <button class="tab" data-target="antibiogram">Local Antibiogram</button>
     <button class="tab" data-target="trend">Trend Explorer</button>
@@ -50,22 +51,51 @@
       <h2>MDRO Overview</h2>
       <canvas id="overviewMdroChart" class="large-chart"></canvas>
     </section>
+  </section>
 
-    <section class="panel full">
-      <h2>WHO AWaRe Dashboard</h2>
-      <div class="aware-grid">
+  <section id="aware" class="page">
+    <section class="panel full aware-dashboard">
+      <div class="aware-header">
         <div>
-          <canvas id="awareStackedChart" class="large-chart-sm"></canvas>
+          <h2>WHO AWaRe Stewardship Dashboard</h2>
+          <p class="aware-subtitle">Track annual Access, Watch and Reserve antibiotic utilization</p>
         </div>
-        <div class="aware-side">
-          <div class="aware-kpis">
-            <article class="aware-card"><div class="kpi-title">Current Access</div><div class="kpi-value" id="awareAccess">-</div><div class="small" id="awareAccessNote">WHO target: ≥60%</div></article>
-            <article class="aware-card"><div class="kpi-title">Current Watch</div><div class="kpi-value" id="awareWatch">-</div><div class="small" id="awareWatchNote">Stewardship target: reduce Watch pressure</div></article>
-            <article class="aware-card"><div class="kpi-title">Current Reserve</div><div class="kpi-value" id="awareReserve">-</div><div class="small" id="awareReserveNote">Monitor restricted use</div></article>
-          </div>
-          <div class="brief compact" id="awareBrief">AWaRe data not loaded.</div>
+        <div class="aware-targets">
+          <div><strong>WHO Target</strong></div>
+          <div>Access ≥60%</div>
+          <div>Reserve &lt;5%</div>
         </div>
       </div>
+
+      <div class="aware-chart-shell">
+        <canvas id="awareStackedChart"></canvas>
+      </div>
+
+      <section class="aware-interpretation">
+        <h3>AWaRe Trend Interpretation</h3>
+        <div class="aware-trend-cards">
+          <article class="trend-card access">
+            <div class="trend-label">Access</div>
+            <div class="trend-main" id="awareAccessTrend">-</div>
+            <div class="trend-delta" id="awareAccessDelta">-</div>
+          </article>
+          <article class="trend-card watch">
+            <div class="trend-label">Watch</div>
+            <div class="trend-main" id="awareWatchTrend">-</div>
+            <div class="trend-delta" id="awareWatchDelta">-</div>
+          </article>
+          <article class="trend-card reserve">
+            <div class="trend-label">Reserve</div>
+            <div class="trend-main" id="awareReserveTrend">-</div>
+            <div class="trend-delta" id="awareReserveDelta">-</div>
+          </article>
+        </div>
+      </section>
+
+      <section class="aware-recommendation">
+        <h3>Stewardship Recommendation</h3>
+        <div id="awareBrief" class="recommendation-grid">AWaRe data not loaded.</div>
+      </section>
     </section>
   </section>
 
@@ -256,7 +286,7 @@
   </section>
 
   <footer>
-    本資料由臺中醫院藥劑科與檢驗科維護。
+    本工具僅使用彙總資料。不應輸入姓名、病歷號、完整 SOAP、床號、生日或可識別病人資料。
   </footer>
 </main>
 

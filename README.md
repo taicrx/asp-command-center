@@ -1,4 +1,4 @@
-# 臺中醫院分離菌種抗生素敏感性儀表板 v6
+# AI ASP Command Center v6
 
 ## v6 changes
 - Executive Brief panel removed from Executive page.
@@ -27,3 +27,14 @@ Example:
 
 ## Setup
 Publish each tab as CSV and paste URLs into `config.js`.
+
+
+## v7 AWaRe module
+
+This version adds a dedicated `WHO AWaRe` tab:
+
+- Full-width interactive 100% stacked bar chart
+- WHO target subtitle: Access ≥60%, Reserve <5%
+- Trend interpretation cards for Access / Watch / Reserve
+- Stewardship recommendation cards
+- Removed redundant current-value card layout

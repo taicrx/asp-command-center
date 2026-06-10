@@ -9,3 +9,134 @@ button{border:none;border-radius:10px;padding:11px 16px;background:var(--blue);c
 .selector-row{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:12px}.selector-row.three{grid-template-columns:repeat(3,1fr)}label{font-weight:700;font-size:14px}select,input{width:100%;margin-top:8px;padding:10px 12px;border:1px solid #cbd5e1;border-radius:10px;font-size:14px;background:#fff}.lookup-row{display:grid;grid-template-columns:1fr auto;gap:12px;margin-bottom:12px}.table-wrap,.heatmap-wrap{overflow-x:auto;margin-top:12px}table{border-collapse:collapse;width:100%;font-size:14px}th,td{border:1px solid var(--line);padding:9px;text-align:left}th{background:#eef2ff}
 .heatmap-table th,.heatmap-table td{text-align:center;min-width:92px;white-space:nowrap}.heatmap-table th:first-child,.heatmap-table td:first-child{text-align:left;min-width:260px;position:sticky;left:0;background:#fff;z-index:1}.heat-cell{font-weight:700;border-radius:4px}.hm-high{background:#15803d!important;color:#fff}.hm-good{background:#86efac!important;color:#064e3b}.hm-mid{background:#fde047!important;color:#713f12}.hm-low{background:#fb923c!important;color:#7c2d12}.hm-poor{background:#ef4444!important;color:#fff}.hm-na{background:#f1f5f9!important;color:#94a3b8}.legend{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 12px}.legend-item{font-size:12px;font-weight:700;padding:6px 10px;border-radius:999px}.coverage-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:12px}.coverage-card{border:1px solid var(--line);border-radius:14px;padding:14px;background:#f8fafc}.coverage-drug{font-weight:800;margin-bottom:8px}.coverage-value{font-size:28px;font-weight:900}.coverage-note{font-size:12px;color:var(--muted);margin-top:6px}.recommendation{margin:12px 0;background:#eff6ff;border:1px solid #bfdbfe;color:#1e3a8a;border-radius:14px;padding:14px;line-height:1.7}footer{color:var(--muted);margin-top:24px;font-size:13px;line-height:1.7}
 @media(max-width:900px){.grid-2,.kpi-grid,.selector-row,.selector-row.three,.aware-grid{grid-template-columns:1fr}.hero,.toolbar{flex-direction:column;align-items:flex-start}}
+
+
+/* v7 AWaRe Stewardship Dashboard */
+.aware-dashboard { padding: 28px; }
+
+.aware-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: flex-start;
+  margin-bottom: 18px;
+}
+
+.aware-header h2 {
+  font-size: 30px;
+  margin-bottom: 6px;
+}
+
+.aware-subtitle {
+  color: var(--muted);
+  margin: 0;
+  font-size: 15px;
+}
+
+.aware-targets {
+  background: #f8fafc;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 14px 18px;
+  color: #334155;
+  min-width: 180px;
+  line-height: 1.55;
+  font-size: 14px;
+}
+
+.aware-chart-shell {
+  height: 520px;
+  padding: 12px 4px 0;
+  margin: 8px 0 22px;
+}
+
+.aware-chart-shell canvas {
+  height: 520px !important;
+  width: 100% !important;
+}
+
+.aware-interpretation,
+.aware-recommendation {
+  border-top: 1px solid var(--line);
+  padding-top: 22px;
+  margin-top: 22px;
+}
+
+.aware-interpretation h3,
+.aware-recommendation h3 {
+  margin: 0 0 14px;
+  font-size: 21px;
+}
+
+.aware-trend-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.trend-card {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 18px;
+  background: #f8fafc;
+}
+
+.trend-card.access { border-left: 6px solid #4CAF50; }
+.trend-card.watch { border-left: 6px solid #F4C542; }
+.trend-card.reserve { border-left: 6px solid #E74C3C; }
+
+.trend-label {
+  font-size: 14px;
+  color: var(--muted);
+  font-weight: 800;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+.trend-main {
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.trend-delta {
+  color: #475569;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.recommendation-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  white-space: normal;
+  background: transparent;
+  border: none;
+  padding: 0;
+  min-height: 0;
+}
+
+.recommendation-item {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 16px;
+  padding: 16px;
+  line-height: 1.65;
+  color: #1e3a8a;
+}
+
+.recommendation-item strong {
+  display: block;
+  margin-bottom: 6px;
+  color: #172033;
+}
+
+@media(max-width:900px){
+  .aware-header { flex-direction: column; }
+  .aware-chart-shell,
+  .aware-chart-shell canvas { height: 420px !important; }
+  .aware-trend-cards,
+  .recommendation-grid { grid-template-columns: 1fr; }
+}
