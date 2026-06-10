@@ -140,3 +140,48 @@ button{border:none;border-radius:10px;padding:11px 16px;background:var(--blue);c
   .aware-trend-cards,
   .recommendation-grid { grid-template-columns: 1fr; }
 }
+
+/* v8 Scorecard and Driver Analysis */
+.scorecard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+  margin-top: 12px;
+}
+.scorecard-card {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 16px;
+  background: #f8fafc;
+  border-left: 6px solid #2563eb;
+}
+.scorecard-card.ddd { border-left-color: #7c3aed; }
+.scorecard-card.low { border-left-color: #ef4444; }
+.scorecard-card.mid { border-left-color: #f59e0b; }
+.scorecard-card.high { border-left-color: #16a34a; }
+.scorecard-title { font-size: 14px; color: var(--muted); font-weight: 800; margin-bottom: 8px; }
+.scorecard-value { font-size: 28px; font-weight: 900; margin-bottom: 6px; }
+.scorecard-meta { font-size: 12px; color: var(--muted); line-height: 1.5; }
+.driver-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin: 12px 0 18px;
+}
+.driver-box {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 16px;
+  background: #f8fafc;
+}
+.driver-box strong {
+  display: block;
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.driver-box span {
+  font-size: 24px;
+  font-weight: 900;
+}
+@media(max-width:900px){.driver-summary{grid-template-columns:1fr}}

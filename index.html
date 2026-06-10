@@ -11,8 +11,8 @@
 <main class="container">
   <header class="hero">
     <div>
-      <h1> 臺中醫院分離菌種抗生素敏感性儀表板 <span class="version">v6</span></h1>
-      <p>Resistance trend, AWaRe stewardship dashboard, antibiogram heatmap, multi-year trend, and empirical coverage.</p>
+      <h1>AI ASP Command Center <span class="version">v6</span></h1>
+      <p>Resistance intelligence, AWaRe stewardship dashboard, antibiogram heatmap, multi-year trend, and empirical coverage.</p>
     </div>
     <div class="status" id="dataStatus">Ready</div>
   </header>
@@ -20,7 +20,9 @@
   <nav class="tabs">
     <button class="tab active" data-target="executive">Executive</button>
     <button class="tab" data-target="aware">WHO AWaRe</button>
-    <button class="tab" data-target="resistance">Resistance Trend</button>
+    <button class="tab" data-target="scorecard">ASP Scorecard</button>
+    <button class="tab" data-target="driver">Resistance Driver</button>
+    <button class="tab" data-target="resistance">Resistance Intelligence</button>
     <button class="tab" data-target="antibiogram">Local Antibiogram</button>
     <button class="tab" data-target="trend">Trend Explorer</button>
     <button class="tab" data-target="empirical">Empirical Therapy</button>
@@ -30,7 +32,7 @@
   <section class="toolbar">
     <div>
       <strong>Data source</strong>
-      <div class="small">CSV URLs are configured in <code>config.js</code>. 系統會自動抓取最新資料，若有疑慮可按右鍵Reload更新.</div>
+      <div class="small">CSV URLs are configured in <code>config.js</code>. Publish Google Sheet tabs as CSV and update the URLs there.</div>
     </div>
     <button onclick="ASP_APP.loadAll()">Reload data</button>
   </section>
@@ -96,6 +98,90 @@
         <h3>Stewardship Recommendation</h3>
         <div id="awareBrief" class="recommendation-grid">AWaRe data not loaded.</div>
       </section>
+    </section>
+  </section>
+
+
+  <section id="scorecard" class="page">
+    <section class="panel full">
+      <h2>ASP Scorecard</h2>
+      <p class="small">Expert-selected infection-control KPI trends derived from the uploaded scorecard workbook.</p>
+      <div class="selector-row three">
+        <label>Metric group
+          <select id="scorecardGroupSelect" onchange="ASP_SCORECARD.render()"></select>
+        </label>
+        <label>Location
+          <select id="scorecardLocationSelect" onchange="ASP_SCORECARD.render()">
+            <option value="all">All locations</option>
+            <option value="Hospital">Hospital</option>
+            <option value="Nosocomial">Nosocomial</option>
+          </select>
+        </label>
+        <label>Measure type
+          <select id="scorecardMeasureSelect" onchange="ASP_SCORECARD.render()">
+            <option value="all">All measures</option>
+            <option value="SusceptibilityPercent">Susceptibility %</option>
+            <option value="ResistanceRate">Resistance rate</option>
+            <option value="DDD">DDD</option>
+          </select>
+        </label>
+      </div>
+      <div id="scorecardCards" class="scorecard-grid"></div>
+    </section>
+
+    <section class="panel full">
+      <h2>Scorecard Trend</h2>
+      <div class="selector-row">
+        <label>Metric
+          <select id="scorecardMetricSelect" onchange="ASP_SCORECARD.renderTrend()"></select>
+        </label>
+        <label>Location
+          <select id="scorecardTrendLocationSelect" onchange="ASP_SCORECARD.renderTrend()">
+            <option value="all">All locations</option>
+            <option value="Hospital">Hospital</option>
+            <option value="Nosocomial">Nosocomial</option>
+          </select>
+        </label>
+      </div>
+      <canvas id="scorecardTrendChart"></canvas>
+    </section>
+  </section>
+
+  <section id="driver" class="page">
+    <section class="panel full">
+      <h2>Resistance Driver Analysis</h2>
+      <p class="small">Lag correlation analysis: antibiotic exposure at time t versus resistance outcome at time t + lag.</p>
+      <div class="selector-row three">
+        <label>Antibiotic exposure
+          <select id="driverExposureSelect" onchange="ASP_DRIVER.render()">
+            <option value="Total_Carbapenem_DDD">Total carbapenem DDD</option>
+            <option value="Meropenem_DDD">Meropenem DDD</option>
+            <option value="Imipenem_DDD">Imipenem DDD</option>
+            <option value="Ertapenem_DDD">Ertapenem DDD</option>
+            <option value="Doripenem_DDD">Doripenem DDD</option>
+            <option value="Vancomycin_DDD">Vancomycin DDD</option>
+          </select>
+        </label>
+        <label>Resistance outcome
+          <select id="driverOutcomeSelect" onchange="ASP_DRIVER.render()">
+            <option value="MRSA_Rate">MRSA rate</option>
+            <option value="CRAB_Rate">CRAB proxy rate</option>
+            <option value="SA_Oxacillin_S">S. aureus Oxacillin S%</option>
+            <option value="Acinetobacter_IPM_S_All">Acinetobacter IPM S%</option>
+            <option value="Pseudomonas_IPM_S_All">Pseudomonas IPM S%</option>
+            <option value="Ecoli_CRO_S_All">E. coli CRO S%</option>
+          </select>
+        </label>
+        <label>Max lag
+          <select id="driverLagSelect" onchange="ASP_DRIVER.render()">
+            <option value="6">0–6 periods</option>
+            <option value="12" selected>0–12 periods</option>
+          </select>
+        </label>
+      </div>
+      <div id="driverSummary" class="driver-summary"></div>
+      <canvas id="driverLagChart"></canvas>
+      <div class="small">Note: uploaded scorecard data are half-year periods. For true month-level lags, use monthly Fact_ASP_Monthly.</div>
     </section>
   </section>
 
@@ -286,7 +372,7 @@
   </section>
 
   <footer>
-    本資料由臺中醫院藥劑科與檢驗科維護。
+    本工具僅使用彙總資料。不應輸入姓名、病歷號、完整 SOAP、床號、生日或可識別病人資料。
   </footer>
 </main>
 
@@ -295,6 +381,8 @@
 <script src="js/data.js"></script>
 <script src="js/charts.js"></script>
 <script src="js/aware.js"></script>
+<script src="js/scorecard.js"></script>
+<script src="js/driver.js"></script>
 <script src="js/heatmap.js"></script>
 <script src="js/trends.js"></script>
 <script src="js/coverage.js"></script>

@@ -38,3 +38,12 @@ This version adds a dedicated `WHO AWaRe` tab:
 - Trend interpretation cards for Access / Watch / Reserve
 - Stewardship recommendation cards
 - Removed redundant current-value card layout
+
+
+## v8 additions
+- New ASP Scorecard tab powered by Fact_KPI_Trend.
+- New Resistance Driver Analysis tab powered by Fact_ASP_Period.
+- Lag correlation from antibiotic exposure to resistance outcomes.
+- config.js now supports:
+  - FACT_KPI_TREND_CSV_URL
+  - FACT_ASP_PERIOD_CSV_URL
