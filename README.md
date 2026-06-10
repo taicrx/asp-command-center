@@ -32,3 +32,8 @@ DrugName
 3. Upload all files to GitHub.
 4. Enable GitHub Pages.
 5. Embed in Google Site.
+
+
+## v5.1 drug mapping priority fix
+
+Drug display now prioritizes the JavaScript drugNameMap over stale DrugName values in Fact_Antibiogram_Master.

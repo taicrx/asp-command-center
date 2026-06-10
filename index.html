@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>臺中醫院 ASP Command Center v5</title>
+  <title>AI ASP Command Center v5</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -149,7 +149,7 @@
   <section id="trend" class="page">
     <section class="panel">
       <h2>Multi-Year Antibiogram Trend Explorer</h2>
-      <p class="small">可查看by Year, by Bug, or by Source</p>
+      <p class="small">v5 修正：先依 Year / Period 聚合後再畫圖，避免 X 軸重複。</p>
       <div class="selector-row three">
         <label>Organism
           <select id="trendOrganismSelect" onchange="ASP_TRENDS.renderSingleDrugTrend()"></select>
