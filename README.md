@@ -47,3 +47,8 @@ This version adds a dedicated `WHO AWaRe` tab:
 - config.js now supports:
   - FACT_KPI_TREND_CSV_URL
   - FACT_ASP_PERIOD_CSV_URL
+
+
+## v8.1 fix
+
+Fixed `this.cleanKPI is not a function` by replacing js/data.js with a complete v8.1 data module.
