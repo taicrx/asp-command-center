@@ -1,4 +1,4 @@
-# AI ASP Command Center v6
+# 臺中醫院分離菌種抗生素敏感性儀表板 v6
 
 ## v6 changes
 - Executive Brief panel removed from Executive page.
