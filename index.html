@@ -11,8 +11,8 @@
 <main class="container">
   <header class="hero">
     <div>
-      <h1>AI ASP Command Center <span class="version">v6</span></h1>
-      <p>Resistance intelligence, AWaRe stewardship dashboard, antibiogram heatmap, multi-year trend, and empirical coverage.</p>
+      <h1> 臺中醫院菌株與抗生素敏感儀表板 <span class="version">v6</span></h1>
+      <p>Resistance trend, AWaRe stewardship dashboard, antibiogram heatmap, multi-year trend, and empirical coverage.</p>
     </div>
     <div class="status" id="dataStatus">Ready</div>
   </header>
@@ -22,7 +22,7 @@
     <button class="tab" data-target="aware">WHO AWaRe</button>
     <button class="tab" data-target="scorecard">ASP Scorecard</button>
     <button class="tab" data-target="driver">Resistance Driver</button>
-    <button class="tab" data-target="resistance">Resistance Intelligence</button>
+    <button class="tab" data-target="resistance">Resistance Trend</button>
     <button class="tab" data-target="antibiogram">Local Antibiogram</button>
     <button class="tab" data-target="trend">Trend Explorer</button>
     <button class="tab" data-target="empirical">Empirical Therapy</button>
@@ -32,7 +32,7 @@
   <section class="toolbar">
     <div>
       <strong>Data source</strong>
-      <div class="small">CSV URLs are configured in <code>config.js</code>. Publish Google Sheet tabs as CSV and update the URLs there.</div>
+      <div class="small">CSV URLs are configured in <code>config.js</code>. 系統會自動抓取最新資料，若想更新，可按Reload按鈕.</div>
     </div>
     <button onclick="ASP_APP.loadAll()">Reload data</button>
   </section>
@@ -372,8 +372,7 @@
   </section>
 
   <footer>
-    本工具僅使用彙總資料。不應輸入姓名、病歷號、完整 SOAP、床號、生日或可識別病人資料。
-  </footer>
+    本資料由臺中醫院藥劑科與檢驗科維護
 </main>
 
 <script src="config.js"></script>
